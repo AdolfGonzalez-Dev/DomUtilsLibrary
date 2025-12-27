@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - DOMUtils Form</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+      font-size: 28px;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .field-input {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .field-input.field-error-input {
+      border-color: #e74c3c;
+      background-color: #ffe8e8;
+    }
+
+    .field-error {
+      color: #e74c3c;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .field-input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .form-submit-btn {
+      flex: 1;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-submit-btn:hover:not(:disabled) {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .form-submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      display: none;
+      margin-top: 20px;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Login</h1>
+    <div id="login-form"></div>
+    <div id="success-message" class="success-message">
+      ¡Bienvenido! Redirigiendo...
+    </div>
+  </div>
+
+  <script type="module">
+    // Para desarrollo local, asume que tienes los archivos compilados
+    // En producción, usarías: import { createForm, required, email } from 'domutils-library/form';
+    
+    // Importar funciones (asume que están en dist/)
+    const { createForm } = await import('../dist/form.js');
+    const { required, email, minLength } = await import('../dist/validators.js');
+
+    const form = createForm({
+      fields: {
+        email: {
+          type: 'email',
+          label: 'Correo Electrónico',
+          placeholder: 'tu@email.com',
+          validators: [
+            required('Correo requerido'),
+            email('Correo inválido')
+          ]
+        },
+        password: {
+          type: 'password',
+          label: 'Contraseña',
+          placeholder: 'Mínimo 6 caracteres',
+          validators: [
+            required('Contraseña requerida'),
+            minLength(6, 'Mínimo 6 caracteres')
+          ]
+        },
+        remember: {
+          type: 'checkbox',
+          label: 'Recuérdame',
+          value: false
+        }
+      },
+
+      async onSubmit(values, form) {
+        try {
+          // Simular request a servidor
+          console.log('Login attempt:', values);
+          
+          // En producción:
+          // const response = await fetch('/api/login', {
+          //   method: 'POST',
+          //   headers: { 'Content-Type': 'application/json' },
+          //   body: JSON.stringify(values)
+          // });
+
+          // Simular éxito
+          await new Promise(r => setTimeout(r, 1000));
+          
+          document.getElementById('success-message').classList.add('show');
+          setTimeout(() => {
+            console.log('Login exitoso');
+            // window.location.href = '/dashboard';
+          }, 1500);
+          
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      },
+
+      onError(errors) {
+        console.error('Errores de validación:', errors);
+      }
+    });
+
+    form.render('#login-form');
+  </script>
+</body>
+</html>

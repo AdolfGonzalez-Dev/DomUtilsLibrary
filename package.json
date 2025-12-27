@@ -1,0 +1,99 @@
+{
+  "name": "domutils-library",
+  "version": "0.4.0",
+  "description": "Lightweight DOM utility library with reactive signals and form validation",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "keywords": [
+    "dom",
+    "utility",
+    "reactive",
+    "signals",
+    "form",
+    "validation",
+    "esm",
+    "javascript",
+    "typescript",
+    "modal",
+    "tabs",
+    "tooltip"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./dom": {
+      "import": "./dist/dom.js",
+      "types": "./dist/dom.d.ts"
+    },
+    "./dom/class": {
+      "import": "./dist/dom.js",
+      "types": "./dist/dom.d.ts"
+    },
+    "./events": {
+      "import": "./dist/events.js",
+      "types": "./dist/events.d.ts"
+    },
+    "./events/listener": {
+      "import": "./dist/events.js",
+      "types": "./dist/events.d.ts"
+    },
+    "./traverse": {
+      "import": "./dist/traverse.js",
+      "types": "./dist/traverse.d.ts"
+    },
+    "./content": {
+      "import": "./dist/content.js",
+      "types": "./dist/content.d.ts"
+    },
+    "./create": {
+      "import": "./dist/create.js",
+      "types": "./dist/create.d.ts"
+    },
+    "./form": {
+      "import": "./dist/form.js",
+      "types": "./dist/form.d.ts"
+    },
+    "./reactive": {
+      "import": "./dist/reactive.js",
+      "types": "./dist/reactive.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup && sed -i -e 's/var src_default =/const DomUtilsLibrary =/' -e 's/src_default as default//g' dist/*.js",
+    "build:analyze": "tsup --metafile",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run test && npm run type-check"
+  },
+  "author": "AdolfDigitalDeveloper",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AdolfDigitalDeveloper/DomUtilsLibrary"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^9.3.3",
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^4.0.15",
+    "@vitest/ui": "^4.0.15",
+    "jsdom": "^22.1.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

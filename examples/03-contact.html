@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto - DOMUtils Form</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(to bottom, #f5f7fa, #e8ecf1);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #999;
+      font-size: 16px;
+    }
+
+    .form-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      padding: 40px;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .field-input {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    textarea.field-input {
+      min-height: 120px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .field-input.field-error-input {
+      border-color: #e74c3c;
+      background-color: #ffe8e8;
+    }
+
+    .field-error {
+      color: #e74c3c;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .form-actions {
+      margin-top: 10px;
+    }
+
+    .form-submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-submit-btn:hover:not(:disabled) {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    }
+
+    .form-submit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      padding: 40px;
+      text-align: center;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .success-message h2 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .success-message p {
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✉️ Contacto</h1>
+      <p>Nos encantaría saber de ti. Envíanos un mensaje.</p>
+    </div>
+
+    <div class="form-card">
+      <div id="contact-form"></div>
+    </div>
+
+    <div id="success-message" class="success-message">
+      <div class="success-icon">✅</div>
+      <h2>¡Mensaje Enviado!</h2>
+      <p>Gracias por contactarnos. Nos pondremos en contacto pronto.</p>
+    </div>
+  </div>
+
+  <script type="module">
+    const { createForm } = await import('../dist/form.js');
+    const { required, email, minLength } = await import('../dist/validators.js');
+    const { trim } = await import('../dist/transformers.js');
+
+    const form = createForm({
+      fields: {
+        name: {
+          label: 'Nombre',
+          placeholder: 'Tu nombre completo',
+          transformers: [trim()],
+          validators: [
+            required('Nombre requerido'),
+            minLength(2, 'Mínimo 2 caracteres')
+          ]
+        },
+
+        email: {
+          type: 'email',
+          label: 'Correo Electrónico',
+          placeholder: 'tu@email.com',
+          transformers: [trim()],
+          validators: [
+            required('Correo requerido'),
+            email('Correo inválido')
+          ]
+        },
+
+        subject: {
+          label: 'Asunto',
+          placeholder: 'Asunto del mensaje',
+          transformers: [trim()],
+          validators: [
+            required('Asunto requerido'),
+            minLength(5, 'Mínimo 5 caracteres')
+          ]
+        },
+
+        message: {
+          type: 'textarea',
+          label: 'Mensaje',
+          placeholder: 'Cuéntanos cómo podemos ayudarte...',
+          transformers: [trim()],
+          validators: [
+            required('Mensaje requerido'),
+            minLength(10, 'Mínimo 10 caracteres')
+          ]
+        }
+      },
+
+      async onSubmit(values) {
+        try {
+          console.log('Enviando contacto:', values);
+          
+          // Simular envío
+          await new Promise(r => setTimeout(r, 1000));
+          
+          document.getElementById('contact-form').style.display = 'none';
+          document.getElementById('success-message').classList.add('show');
+          
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      }
+    });
+
+    form.render('#contact-form');
+  </script>
+</body>
+</html>

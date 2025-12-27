@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - DOMUtils Form</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #999;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-row .field:only-child {
+      grid-column: 1 / -1;
+    }
+
+    .field-label {
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .field-required {
+      color: #e74c3c;
+    }
+
+    .field-input {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .field-input.field-error-input {
+      border-color: #e74c3c;
+      background-color: #ffe8e8;
+    }
+
+    .field-error {
+      color: #e74c3c;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .field-hint {
+      color: #999;
+      font-size: 12px;
+      margin-top: -4px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: #f9f9f9;
+      border-radius: 6px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      flex: 1;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .form-submit-btn,
+    .form-reset-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-submit-btn {
+      background: #667eea;
+      color: white;
+    }
+
+    .form-submit-btn:hover:not(:disabled) {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .form-reset-btn {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .form-reset-btn:hover {
+      background: #d0d0d0;
+    }
+
+    .form-submit-btn:disabled,
+    .form-reset-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .validation-summary {
+      background: #fee;
+      border: 1px solid #fcc;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .validation-summary.show {
+      display: block;
+    }
+
+    .validation-summary h3 {
+      color: #c33;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .validation-summary ul {
+      list-style: none;
+      font-size: 13px;
+      color: #c33;
+    }
+
+    .validation-summary li {
+      margin-bottom: 6px;
+    }
+
+    .success-message {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+      padding: 16px;
+      border-radius: 6px;
+      text-align: center;
+      display: none;
+      margin-top: 20px;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Crear Cuenta</h1>
+    <p class="subtitle">Únete a nosotros hoy</p>
+
+    <div id="validation-summary" class="validation-summary">
+      <h3>Por favor corrige los siguientes errores:</h3>
+      <ul id="error-list"></ul>
+    </div>
+
+    <div id="register-form"></div>
+
+    <div id="success-message" class="success-message">
+      ✅ ¡Cuenta creada exitosamente! Redirigiendo...
+    </div>
+  </div>
+
+  <script type="module">
+    const { createForm } = await import('../dist/form.js');
+    const { 
+      required, 
+      email, 
+      minLength, 
+      pattern, 
+      asyncValidator,
+      compose,
+      custom
+    } = await import('../dist/validators.js');
+    const { trim } = await import('../dist/transformers.js');
+
+    const form = createForm({
+      fields: {
+        firstName: {
+          label: 'Nombre',
+          placeholder: 'Juan',
+          transformers: [trim()],
+          validators: [
+            required('Nombre requerido'),
+            minLength(2, 'Mínimo 2 caracteres')
+          ]
+        },
+
+        lastName: {
+          label: 'Apellido',
+          placeholder: 'García',
+          transformers: [trim()],
+          validators: [
+            required('Apellido requerido'),
+            minLength(2, 'Mínimo 2 caracteres')
+          ]
+        },
+
+        email: {
+          type: 'email',
+          label: 'Correo Electrónico',
+          placeholder: 'tu@email.com',
+          transformers: [trim()],
+          validators: [
+            required('Correo requerido'),
+            email('Correo inválido'),
+            // Simular validación async
+            asyncValidator(
+              async (value) => {
+                await new Promise(r => setTimeout(r, 500));
+                const taken = ['test@example.com', 'admin@example.com'];
+                if (taken.includes(value)) {
+                  return 'Correo ya registrado';
+                }
+                return true;
+              }
+            )
+          ],
+          debounceAsync: 800
+        },
+
+        password: {
+          type: 'password',
+          label: 'Contraseña',
+          placeholder: 'Mínimo 8 caracteres',
+          validators: [
+            required('Contraseña requerida'),
+            minLength(8, 'Mínimo 8 caracteres'),
+            pattern(/[A-Z]/, 'Requiere mayúscula'),
+            pattern(/[0-9]/, 'Requiere número'),
+            pattern(/[^A-Za-z0-9]/, 'Requiere carácter especial')
+          ]
+        },
+
+        confirmPassword: {
+          type: 'password',
+          label: 'Confirmar Contraseña',
+          placeholder: 'Repite tu contraseña',
+          validators: [
+            required('Confirmación requerida'),
+            (value, formValues) => {
+              return value === formValues.password 
+                ? null 
+                : 'Las contraseñas no coinciden';
+            }
+          ]
+        },
+
+        terms: {
+          type: 'checkbox',
+          label: 'Acepto los términos y condiciones',
+          validators: [
+            custom(v => v === true, 'Debes aceptar los términos')
+          ]
+        }
+      },
+
+      async onSubmit(values) {
+        try {
+          console.log('Registro:', values);
+          
+          // Simular request
+          await new Promise(r => setTimeout(r, 1500));
+          
+          document.getElementById('success-message').classList.add('show');
+          setTimeout(() => {
+            console.log('Registro exitoso');
+          }, 2000);
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
+      },
+
+      onError(errors) {
+        const summary = document.getElementById('validation-summary');
+        const errorList = document.getElementById('error-list');
+        
+        if (Object.keys(errors).length > 0) {
+          errorList.innerHTML = Object.entries(errors)
+            .map(([field, error]) => `<li><strong>${field}:</strong> ${error}</li>`)
+            .join('');
+          summary.classList.add('show');
+        } else {
+          summary.classList.remove('show');
+        }
+      }
+    });
+
+    form.render('#register-form');
+
+    // Agregar botón reset
+    const resetBtn = form._form?.querySelector('.form-reset-btn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        form.reset();
+        document.getElementById('validation-summary').classList.remove('show');
+      });
+    }
+  </script>
+</body>
+</html>
