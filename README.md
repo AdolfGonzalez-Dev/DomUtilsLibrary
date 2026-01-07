@@ -1,4 +1,4 @@
-# DOMUtils Library v0.3.0
+# DOMUtils Library v0.5.0
 
 > Lightweight DOM utility library with reactive signals, form validation, and accessible components.
 
